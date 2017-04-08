@@ -11,6 +11,8 @@
 """
 Python implementation of the rpmatch(3) libc function.
 
+It can be imported and used in python scripts or directly run as a script.
+
 Usage example in python scripts:
 
     from rpmatch import rpmatch
@@ -23,6 +25,15 @@ Usage example in python scripts:
     else:
         # User did not agree
         ...
+
+Usage as a script from command line:
+
+    > python -m rpmatch response
+
+When used as a script, the following exit status codes are used:
+  - 0 for a recognized affirmative response
+  - 1 for a recognized negative response
+  - 2 for an unrecognized response
 """
 
 __all__ = ['rpmatch']
@@ -61,5 +72,61 @@ def rpmatch(response):
         result = -1
 
     return result
+
+
+# Make module runnable as a script
+if __name__ == "__main__":
+
+    import optparse  # argparse is better but not included in python 2.6 stdlib
+    import os
+    import sys
+
+    def process_command_line():
+        """Process program command line arguments"""
+
+        # Setup option parser
+        usage = (
+          "\n  %prog response"
+          "\n  %prog option"
+        )
+
+        description = (
+          "Determine if the answer to a question is affirmative or negative"
+        )
+
+        optparser = optparse.OptionParser(usage=usage, description=description)
+
+        # Register options
+        optparser.add_option(
+          "-V", "--version",
+          action="store_true",
+          help="show version information and exit"
+        )
+
+        # Convert arguments to local variables
+        (keyword_args, positional_args) = optparser.parse_args()
+
+        # Handle keyword arguments
+        if keyword_args.version:
+            sys.stdout.write(
+              "%s %s\n" % (os.path.basename(sys.argv[0]), __version__)
+            )
+            sys.exit(os.EX_OK)
+
+        # Look for response in positional args
+        try:
+            response = positional_args[0]
+        except IndexError:
+            optparser.print_help(file=sys.stderr)
+            sys.exit(3)
+
+        return response
+
+    #
+    # Main
+    #
+    locale.setlocale(locale.LC_ALL, "")
+    response = process_command_line()
+    sys.exit(1 - rpmatch(response))
 
 # vi: set ft=python et sw=4 ts=4:
