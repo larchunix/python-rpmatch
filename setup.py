@@ -4,7 +4,7 @@
 # This script is free software, and you may redistribute it and/or modify
 # it under the same terms as Python itself.
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(
   name='rpmatch',
@@ -20,6 +20,7 @@ setup(
     'Topic :: Software Development :: Libraries :: Python Modules',
   ],
   py_modules=['rpmatch'],
+  python_requires='>=2.3',
 )
 
 # vi: set ft=python et sw=4 ts=4:
