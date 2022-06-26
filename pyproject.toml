@@ -1,0 +1,5 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [ "setuptools>=34.4.0" ]
+
+# vi: set ft=toml et sw=2 ts=2:
